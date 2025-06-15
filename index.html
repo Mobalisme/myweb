@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>풍등이 떠다니는 홈페이지</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            position: relative;
+        }
+
+        /* 별들 배경 */
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent),
+                radial-gradient(2px 2px at 160px 30px, #fff, transparent);
+            background-repeat: repeat;
+            background-size: 200px 100px;
+            animation: sparkle 3s linear infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* 풍등 컨테이너 */
+        .lantern-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 풍등 기본 스타일 */
+        .lantern {
+            position: absolute;
+            width: 60px;
+            height: 80px;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+        }
+
+        /* 풍등 몸체 */
+        .lantern-body {
+            width: 100%;
+            height: 70%;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: relative;
+            box-shadow: 
+                inset -10px -10px 0 rgba(0,0,0,0.2),
+                0 0 20px rgba(255,107,107,0.5);
+        }
+
+        .lantern-body::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 20%;
+            width: 60%;
+            height: 20%;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            filter: blur(2px);
+        }
+
+        /* 풍등 상단 */
+        .lantern-top {
+            width: 80%;
+            height: 15%;
+            background: #8b4513;
+            margin: 0 auto;
+            border-radius: 10px 10px 0 0;
+            position: relative;
+        }
+
+        .lantern-top::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 20px;
+            background: #654321;
+            border-radius: 2px;
+        }
+
+        /* 풍등 하단 */
+        .lantern-bottom {
+            width: 20%;
+            height: 15%;
+            background: #ff6b6b;
+            margin: 0 auto;
+            border-radius: 0 0 50% 50%;
+            position: relative;
+        }
+
+        .lantern-bottom::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 15px;
+            background: #ff4757;
+            border-radius: 1px;
+        }
+
+        /* 다양한 색상의 풍등들 */
+        .lantern.red .lantern-body {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            box-shadow: 
+                inset -10px -10px 0 rgba(0,0,0,0.2),
+                0 0 20px rgba(255,107,107,0.5);
+        }
+
+        .lantern.blue .lantern-body {
+            background: linear-gradient(45deg, #4ecdc4, #6bcf7f);
+            box-shadow: 
+                inset -10px -10px 0 rgba(0,0,0,0.2),
+                0 0 20px rgba(78,205,196,0.5);
+        }
+
+        .lantern.yellow .lantern-body {
+            background: linear-gradient(45deg, #feca57, #ff9ff3);
+            box-shadow: 
+                inset -10px -10px 0 rgba(0,0,0,0.2),
+                0 0 20px rgba(254,202,87,0.5);
+        }
+
+        .lantern.purple .lantern-body {
+            background: linear-gradient(45deg, #a55eea, #c44569);
+            box-shadow: 
+                inset -10px -10px 0 rgba(0,0,0,0.2),
+                0 0 20px rgba(165,94,234,0.5);
+        }
+
+        .lantern.green .lantern-body {
+            background: linear-gradient(45deg, #26de81, #20bf6b);
+            box-shadow: 
+                inset -10px -10px 0 rgba(0,0,0,0.2),
+                0 0 20px rgba(38,222,129,0.5);
+        }
+
+        /* 풍등 애니메이션들 */
+        @keyframes float1 {
+            0% { transform: translateY(100vh) translateX(0px) rotate(0deg); }
+            25% { transform: translateY(75vh) translateX(20px) rotate(2deg); }
+            50% { transform: translateY(50vh) translateX(-10px) rotate(-1deg); }
+            75% { transform: translateY(25vh) translateX(15px) rotate(1deg); }
+            100% { transform: translateY(-100px) translateX(0px) rotate(0deg); }
+        }
+
+        @keyframes float2 {
+            0% { transform: translateY(100vh) translateX(0px) rotate(0deg); }
+            30% { transform: translateY(70vh) translateX(-25px) rotate(-2deg); }
+            60% { transform: translateY(40vh) translateX(30px) rotate(3deg); }
+            100% { transform: translateY(-100px) translateX(0px) rotate(0deg); }
+        }
+
+        @keyframes float3 {
+            0% { transform: translateY(100vh) translateX(0px) rotate(0deg); }
+            20% { transform: translateY(80vh) translateX(10px) rotate(1deg); }
+            40% { transform: translateY(60vh) translateX(-20px) rotate(-2deg); }
+            80% { transform: translateY(20vh) translateX(25px) rotate(2deg); }
+            100% { transform: translateY(-100px) translateX(0px) rotate(0deg); }
+        }
+
+        @keyframes float4 {
+            0% { transform: translateY(100vh) translateX(0px) rotate(0deg); }
+            35% { transform: translateY(65vh) translateX(-15px) rotate(-1deg); }
+            70% { transform: translateY(30vh) translateX(20px) rotate(2deg); }
+            100% { transform: translateY(-100px) translateX(0px) rotate(0deg); }
+        }
+
+        @keyframes float5 {
+            0% { transform: translateY(100vh) translateX(0px) rotate(0deg); }
+            25% { transform: translateY(75vh) translateX(35px) rotate(3deg); }
+            50% { transform: translateY(50vh) translateX(-30px) rotate(-2deg); }
+            75% { transform: translateY(25vh) translateX(10px) rotate(1deg); }
+            100% { transform: translateY(-100px) translateX(0px) rotate(0deg); }
+        }
+
+        /* 풍등 위치 및 애니메이션 적용 */
+        .lantern:nth-child(1) {
+            left: 10%;
+            animation: float1 15s infinite;
+            animation-delay: 0s;
+        }
+
+        .lantern:nth-child(2) {
+            left: 25%;
+            animation: float2 18s infinite;
+            animation-delay: 3s;
+        }
+
+        .lantern:nth-child(3) {
+            left: 45%;
+            animation: float3 20s infinite;
+            animation-delay: 6s;
+        }
+
+        .lantern:nth-child(4) {
+            left: 65%;
+            animation: float1 16s infinite;
+            animation-delay: 9s;
+        }
+
+        .lantern:nth-child(5) {
+            left: 80%;
+            animation: float4 22s infinite;
+            animation-delay: 12s;
+        }
+
+        .lantern:nth-child(6) {
+            left: 35%;
+            animation: float5 19s infinite;
+            animation-delay: 15s;
+        }
+
+        .lantern:nth-child(7) {
+            left: 55%;
+            animation: float2 17s infinite;
+            animation-delay: 18s;
+        }
+
+        .lantern:nth-child(8) {
+            left: 15%;
+            animation: float3 21s infinite;
+            animation-delay: 21s;
+        }
+
+        /* 메인 콘텐츠 */
+        .main-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            z-index: 10;
+        }
+
+        .main-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .main-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        @keyframes glow {
+            from { text-shadow: 2px 2px 4px rgba(0,0,0,0.5), 0 0 10px rgba(255,255,255,0.3); }
+            to { text-shadow: 2px 2px 4px rgba(0,0,0,0.5), 0 0 20px rgba(255,255,255,0.6); }
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2rem;
+            }
+            
+            .main-subtitle {
+                font-size: 1rem;
+            }
+            
+            .lantern {
+                width: 40px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 별들 배경 -->
+    <div class="stars"></div>
+    
+    <!-- 풍등들 -->
+    <div class="lantern-container">
+        <div class="lantern red">
+            <div class="lantern-top"></div>
+            <div class="lantern-body"></div>
+            <div class="lantern-bottom"></div>
+        </div>
+        
+        <div class="lantern blue">
+            <div class="lantern-top"></div>
+            <div class="lantern-body"></div>
+            <div class="lantern-bottom"></div>
+        </div>
+        
+        <div class="lantern yellow">
+            <div class="lantern-top"></div>
+            <div class="lantern-body"></div>
+            <div class="lantern-bottom"></div>
+        </div>
+        
+        <div class="lantern purple">
+            <div class="lantern-top"></div>
+            <div class="lantern-body"></div>
+            <div class="lantern-bottom"></div>
+        </div>
+        
+        <div class="lantern green">
+            <div class="lantern-top"></div>
+            <div class="lantern-body"></div>
+            <div class="lantern-bottom"></div>
+        </div>
+        
+        <div class="lantern red">
+            <div class="lantern-top"></div>
+            <div class="lantern-body"></div>
+            <div class="lantern-bottom"></div>
+        </div>
+        
+        <div class="lantern blue">
+            <div class="lantern-top"></div>
+            <div class="lantern-body"></div>
+            <div class="lantern-bottom"></div>
+        </div>
+        
+        <div class="lantern yellow">
+            <div class="lantern-top"></div>
+            <div class="lantern-body"></div>
+            <div class="lantern-bottom"></div>
+        </div>
+    </div>
+    
+    <!-- 메인 콘텐츠 -->
+    <div class="main-content">
+        <h1 class="main-title">환상적인 풍등의 밤</h1>
+        <p class="main-subtitle">꿈처럼 아름다운 순간을 함께하세요</p>
+    </div>
+</body>
+</html>
